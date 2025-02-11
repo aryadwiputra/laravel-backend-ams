@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Admin\CompanyController;
 use App\Http\Controllers\Api\V1\Admin\UserController;
 use App\Http\Controllers\Api\V1\Auth\LoginController;
 use App\Http\Controllers\Api\V1\Auth\RegisterController;
@@ -19,6 +20,7 @@ Route::middleware([JwtMiddleware::class])->prefix('v1')->name('v1.')->group(func
     // Category Routes
     Route::apiResource('categories', CategoryController::class);
     Route::apiResource('users', UserController::class);
+    Route::apiResource('companies', CompanyController::class);
 
     // User Route (Example)
     Route::get('/user', function (Request $request) {
