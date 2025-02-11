@@ -2,11 +2,8 @@
 
 namespace App\Providers;
 
-use App\Repositories\Categories\CategoryRepositoryInterface;
-use App\Repositories\Categories\CategoryRepository;
-use App\Repositories\Users\UserRepositoryInterface;
-use App\Repositories\Users\UserRepository;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\File;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,9 +12,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(CategoryRepositoryInterface::class, CategoryRepository::class);
-        $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
-
+        $this->registerRepositories();
     }
 
     /**
@@ -26,5 +21,31 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
+    }
+
+    protected function registerRepositories(): void
+    {
+        $repositoriesPath = app_path('Repositories'); // Direktori tempat repository Anda berada
+
+        // Loop melalui semua direktori di dalam direktori Repositories
+        foreach (File::directories($repositoriesPath) as $directory) {
+            $namespace = 'App\\Repositories\\' . basename($directory); // Namespace untuk direktori ini
+
+            // Loop melalui semua file PHP di dalam direktori
+            foreach (File::allFiles($directory) as $file) {
+                $filename = $file->getFilenameWithoutExtension();
+
+                // Cek apakah nama file berakhiran "Interface"
+                if (str_ends_with($filename, 'Interface')) {
+                    $interface = $namespace . '\\' . $filename;
+                    $repository = str_replace('Interface', '', $interface); // Hilangkan "Interface" untuk mendapatkan nama repository
+
+                    // Pastikan class repository ada sebelum melakukan binding
+                    if (class_exists($repository)) {
+                        $this->app->bind($interface, $repository);
+                    }
+                }
+            }
+        }
     }
 }
