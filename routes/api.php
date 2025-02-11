@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\Admin\UserController;
 use App\Http\Controllers\Api\V1\Auth\LoginController;
 use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use App\Http\Controllers\Api\V1\CategoryController;
+use App\Http\Controllers\Api\V1\Admin\UnitOfMeasurementController;
 use App\Http\Middleware\JwtMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +22,7 @@ Route::middleware([JwtMiddleware::class])->prefix('v1')->name('v1.')->group(func
     Route::apiResource('categories', CategoryController::class);
     Route::apiResource('users', UserController::class);
     Route::apiResource('companies', CompanyController::class);
+    Route::apiResource('unit_of_measurements', UnitOfMeasurementController::class);
 
     // User Route (Example)
     Route::get('/user', function (Request $request) {
